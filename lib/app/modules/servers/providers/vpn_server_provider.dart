@@ -47,7 +47,7 @@ class VpnServerProvider extends GetConnect {
     } catch (e) {
       printError(info: '$e');
     }
-    vpnList.shuffle();
+    // vpnList.shuffle();
 
     // if (vpnList.isNotEmpty) Pref.vpnList = vpnList;
 

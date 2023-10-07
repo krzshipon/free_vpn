@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:free_vpn/app/modules/home/controllers/home_controller.dart';
 import 'package:free_vpn/app/modules/servers/providers/vpn_server_provider.dart';
 import 'package:free_vpn/app/modules/servers/vpn_server_model.dart';
@@ -26,7 +28,9 @@ class ServersController extends GetxController {
       (vpnServers) {
         printInfo(info: 'Got Total: ${vpnServers.length}');
         if (vpnServers.isNotEmpty) {
-          _homeController.vpnServer.value = vpnServers[1];
+          _homeController.vpnServer.value =
+              vpnServers[Random().nextInt(vpnServers.length)];
+          _homeController.vpnList.value = vpnServers;
         }
       },
     );

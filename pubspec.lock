@@ -219,6 +219,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  openvpn_sf_flutter:
+    dependency: "direct main"
+    description:
+      name: openvpn_sf_flutter
+      sha256: "1d84a2d4c0ee2002393e68aa132d2575bbf7a9a3142cb7573bd1fe2e81c817f7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   path:
     dependency: transitive
     description:
