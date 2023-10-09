@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "country": "Bangladesh",
+  "countryCode": "BD",
+  "region": "C",
+  "regionName": "Dhaka Division",
+  "city": "Dhaka",
+  "zip": "1212",
+  "lat": 23.7908,
+  "lon": 90.4109,
+  "timezone": "Asia/Dhaka",
+  "isp": "AXN ONLINE",
+  "org": "AXN ONLINE",
+  "as": "AS134228 AXN ONLINE",
+  "query": "103.156.166.5"
+}

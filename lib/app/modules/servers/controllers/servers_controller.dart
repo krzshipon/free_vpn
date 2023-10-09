@@ -1,11 +1,13 @@
-import 'package:free_vpn/app/modules/home/controllers/home_controller.dart';
-import 'package:free_vpn/app/modules/servers/providers/vpn_server_provider.dart';
-import 'package:free_vpn/app/modules/servers/vpn_server_model.dart';
-import 'package:get/get.dart';
+import 'package:super_ui_kit/super_ui_kit.dart';
+
+import '../../home/controllers/home_controller.dart';
+import '../providers/vpn_server_provider.dart';
+import '../vpn_server_model.dart';
 
 class ServersController extends GetxController {
-  VpnServerProvider _serverProvider = VpnServerProvider();
-  HomeController _homeController = Get.find();
+  final VpnServerProvider _serverProvider = VpnServerProvider();
+  final HomeController _homeController = Get.find();
+  final servers = <VpnServer>[].obs;
   @override
   void onInit() {
     super.onInit();
@@ -13,6 +15,7 @@ class ServersController extends GetxController {
 
   @override
   void onReady() {
+    getServer();
     super.onReady();
   }
 
@@ -22,13 +25,26 @@ class ServersController extends GetxController {
   }
 
   getServer() {
+    Get.showLoader();
     _serverProvider.getVPNServers().then(
       (vpnServers) {
         printInfo(info: 'Got Total: ${vpnServers.length}');
         if (vpnServers.isNotEmpty) {
           _homeController.vpnServer.value = vpnServers[1];
+          servers.value = vpnServers;
+          servers.refresh();
         }
+        Get.hideLoader();
       },
-    );
+    ).onError((error, stackTrace) {
+      printError(info: error.toString());
+      Get.hideLoader();
+    });
+  }
+
+  selectVpnServer(int index) {
+    _homeController.vpnServer.value = servers[index];
+    _homeController.box.write('selectedServer', servers[index].toJson());
+    Get.back();
   }
 }
