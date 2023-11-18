@@ -1,25 +1,40 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:free_vpn/app/data/data_keys.dart';
-import 'package:free_vpn/app/modules/ip_details/ip_details_model.dart';
-import 'package:free_vpn/app/modules/ip_details/providers/ip_details_provider.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
+import '../../../data/app_constants.dart';
+import '../../../data/data_keys.dart';
 import '../../../data/models/vpn_config.dart';
 import '../../../routes/app_pages.dart';
 import '../../../services/vpn_engine.dart';
+import '../../ip_details/ip_details_model.dart';
+import '../../ip_details/providers/ip_details_provider.dart';
+import '../../servers/providers/vpn_server_provider.dart';
 import '../../servers/vpn_server_model.dart';
 
 class HomeController extends GetxController {
+  //Required libs, controllers & services
   final box = GetStorage();
   final _ipDetailsProvider = IpDetailsProvider();
+  final VpnServerProvider _serverProvider = VpnServerProvider();
 
+  //Required Fields
   final vpnServer = VpnServer(countryLong: 'Please select a server...').obs;
   final vpnState = VpnEngine.vpnDisconnected.obs;
   final ipDetails = IpDetails().obs;
+  var isSelection = false;
+
+  //Listeners => Must dispose on close
+  Function()? selectedServerListener;
 
   @override
   void onInit() {
+    super.onInit();
+    registerListeners();
+  }
+
+  void registerListeners() {
+    //Engine status...
     VpnEngine.vpnStageSnapshot().listen((event) {
       vpnState.value = event;
       if (event == VpnEngine.vpnConnected ||
@@ -27,25 +42,80 @@ class HomeController extends GetxController {
         getIpDetails();
       }
     });
-    var savedServer = box.read(kSelectedVpnServer);
-    if (savedServer != null) {
-      vpnServer.value = VpnServer.fromJson(savedServer);
-    }
-    super.onInit();
+    //Selected Server...
+    selectedServerListener =
+        box.listenKey(kSelectedVpnServer, (selectedVpnServer) {
+      if (selectedVpnServer != null) {
+        vpnServer.value = selectedVpnServer;
+        if (isSelection) {
+          isSelection = !isSelection;
+          connectVpn();
+        }
+      }
+    });
   }
 
   @override
   void onReady() {
-    getIpDetails();
     super.onReady();
+    loadData();
+  }
+
+  void loadData() {
+    //Vpn Server
+    getVpnServer();
+    //Ip Detail
+    getIpDetails();
   }
 
   @override
   void onClose() {
+    VpnEngine.stopVpn();
+    //Dispose listeners
+    selectedServerListener?.call();
     super.onClose();
   }
 
+  void getVpnServer() {
+    String? vpnServerLastUpdatedTimeStamp =
+        box.read<String>(kVpnServersUpdatedAt);
+    if (vpnServerLastUpdatedTimeStamp != null) {
+      var lastUpdatedAt = DateTime.parse(vpnServerLastUpdatedTimeStamp);
+      if (DateTime.now().difference(lastUpdatedAt) < ktVpnServersRefreshTime) {
+        // In duration => get from storage
+        var savedVpnServer = box.read(kSelectedVpnServer);
+        if (savedVpnServer != null) {
+          vpnServer.value = savedVpnServer;
+        } else {
+          //No server found in storage => Refresh now
+          _serverProvider.refreshVpnServers();
+        }
+      } else {
+        //Time elapsed => refresh vpn servers
+        _serverProvider.refreshVpnServers();
+      }
+    } else {
+      //Vpn servers last update time not found => refresh vpn servers
+      _serverProvider.refreshVpnServers();
+    }
+  }
+
+  void getIpDetails() {
+    ipDetails.value = IpDetails();
+    Future.delayed(const Duration(seconds: 3)).then((value) {
+      _ipDetailsProvider.getIPDetails().then((result) {
+        result?.printInfo();
+        if (result != null) {
+          ipDetails.value = result;
+        }
+      }).onError((error, stackTrace) {
+        error.printError();
+      });
+    });
+  }
+
   selectLocation() {
+    VpnEngine.stopVpn();
     Get.toNamed(Routes.SERVERS);
   }
 
@@ -98,20 +168,6 @@ class HomeController extends GetxController {
   void dispose() {
     super.dispose();
     VpnEngine.stopVpn();
-  }
-
-  void getIpDetails() {
-    ipDetails.value = IpDetails();
-    Future.delayed(const Duration(seconds: 3)).then((value) {
-      _ipDetailsProvider.getIPDetails().then((result) {
-        result?.printInfo();
-        if (result != null) {
-          ipDetails.value = result;
-        }
-      }).onError((error, stackTrace) {
-        error.printError();
-      });
-    });
   }
 
   showIpDetails() {

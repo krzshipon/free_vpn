@@ -1,8 +1,8 @@
+import 'package:free_vpn/app/modules/home/controllers/home_controller.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../../../data/app_constants.dart';
 import '../../../data/data_keys.dart';
-import '../../home/controllers/home_controller.dart';
 import '../providers/vpn_server_provider.dart';
 import '../vpn_server_model.dart';
 
@@ -10,7 +10,7 @@ class ServersController extends GetxController {
   //Required libs, controllers & services
   final box = GetStorage();
   final VpnServerProvider _serverProvider = VpnServerProvider();
-  final HomeController _homeController = Get.find();
+  final HomeController _homeController = Get.find<HomeController>();
 
   //Required Fields
   final servers = <VpnServer>[].obs;
@@ -59,9 +59,8 @@ class ServersController extends GetxController {
     String? vpnServerLastUpdatedTimeStamp =
         box.read<String>(kVpnServersUpdatedAt);
     if (vpnServerLastUpdatedTimeStamp != null) {
-      if (DateTime.now()
-              .difference(DateTime.parse(vpnServerLastUpdatedTimeStamp)) <
-          ktVpnServersRefreshTime) {
+      var lastUpdatedAt = DateTime.parse(vpnServerLastUpdatedTimeStamp);
+      if (DateTime.now().difference(lastUpdatedAt) < ktVpnServersRefreshTime) {
         //In duration => get from storage
         var vpnServers = box.read(kVpnServers);
         if (vpnServers != null) {
@@ -81,14 +80,13 @@ class ServersController extends GetxController {
     }
   }
 
-  refreshVpnServersFromProvider() {
-    //Calling provider to refresh vpn server data...
-    _serverProvider.refreshVpnServers();
+  selectVpnServer(int index) {
+    _homeController.isSelection = true;
+    box.write(kSelectedVpnServer, servers[index]);
+    Get.back();
   }
 
-  selectVpnServer(int index) {
-    _homeController.vpnServer.value = servers[index];
-    _homeController.box.write(kSelectedVpnServer, servers[index].toJson());
-    Get.back();
+  refreshVpnServersFromProvider() {
+    _serverProvider.refreshVpnServers();
   }
 }

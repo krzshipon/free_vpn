@@ -36,7 +36,10 @@ class VpnServerProvider extends GetConnect {
                 'refreshVpnServers => Server Score: $i: ${vpnList[i - 1].score}');
       }
 
-      if (vpnList.isNotEmpty) box.write(kVpnServers, vpnList);
+      if (vpnList.isNotEmpty) {
+        box.write(kVpnServers, vpnList);
+        box.write(kSelectedVpnServer, vpnList[0]);
+      }
       box.write(kVpnServersUpdatedAt, DateTime.now().toIso8601String());
       printInfo(info: 'refreshVpnServers => Total Server: ${vpnList.length}');
       Get.hideLoader();

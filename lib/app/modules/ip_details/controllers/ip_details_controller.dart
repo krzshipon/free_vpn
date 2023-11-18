@@ -1,5 +1,6 @@
-import 'package:free_vpn/app/modules/home/controllers/home_controller.dart';
 import 'package:get/get.dart';
+
+import '../../home/controllers/home_controller.dart';
 
 class IpDetailsController extends GetxController {
   final homeController = Get.find<HomeController>();
