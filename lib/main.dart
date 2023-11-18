@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import 'app/routes/app_pages.dart';
@@ -13,7 +12,7 @@ Future<void> main() async {
 
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "Free Vpn",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       theme: appLightTheme.copyWith(useMaterial3: false),

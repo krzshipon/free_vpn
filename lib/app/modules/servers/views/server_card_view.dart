@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:free_vpn/app/modules/servers/vpn_server_model.dart';
-import 'package:free_vpn/app/util/app_util.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
+
+import '../../../util/app_util.dart';
+import '../vpn_server_model.dart';
 
 class ServerCardView extends GetView {
   final VpnServer vpnServer;
@@ -29,7 +30,9 @@ class ServerCardView extends GetView {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(5.0), //or 15.0
                   child: Container(
-                    color: (vpnServer.countryShort == null) ? Colors.red.shade300 : null,
+                    color: (vpnServer.countryShort == null)
+                        ? Colors.red.shade300
+                        : null,
                     height: 55.0,
                     width: 80.0,
                     child: (vpnServer.countryShort == null)

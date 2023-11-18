@@ -9,6 +9,10 @@ class ServersView extends GetView<ServersController> {
   @override
   Widget build(BuildContext context) {
     return CSHomeWidget(
+      floatingActionButton: CSIconButton(
+        icon: Icons.refresh_sharp,
+        onTap: () => controller.refreshVpnServersFromProvider(),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -19,17 +23,21 @@ class ServersView extends GetView<ServersController> {
             title: "Vpn Servers",
           ),
           verticalSpaceRegular,
-          Expanded(
-            child: Obx(
-              () => ListView.builder(
-                itemCount: controller.servers.length,
-                itemBuilder: (context, index) => ServerCardView(
-                  controller.servers[index],
-                  onTap: () => controller.selectVpnServer(index),
-                ),
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-              ),
+          Obx(
+            () => Expanded(
+              child: controller.servers.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: controller.servers.length,
+                      itemBuilder: (context, index) => ServerCardView(
+                        controller.servers[index],
+                        onTap: () => controller.selectVpnServer(index),
+                      ),
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                    )
+                  : const Center(
+                      child: CSText.label("No server found! Refresh Now..."),
+                    ),
             ),
           ),
         ],

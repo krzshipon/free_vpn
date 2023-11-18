@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:free_vpn/app/data/data_keys.dart';
 import 'package:free_vpn/app/modules/ip_details/ip_details_model.dart';
 import 'package:free_vpn/app/modules/ip_details/providers/ip_details_provider.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
@@ -26,7 +27,7 @@ class HomeController extends GetxController {
         getIpDetails();
       }
     });
-    var savedServer = box.read('selectedServer');
+    var savedServer = box.read(kSelectedVpnServer);
     if (savedServer != null) {
       vpnServer.value = VpnServer.fromJson(savedServer);
     }
