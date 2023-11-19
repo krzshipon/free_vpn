@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:free_vpn/app/data/app_constants.dart';
 import 'package:free_vpn/app/data/models/vpn_status.dart';
 import 'package:free_vpn/app/services/vpn_engine.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
@@ -110,15 +111,20 @@ class HomeView extends GetView<HomeController> {
                     backgroundColor:
                         controller.getPowerButtonColor.withOpacity(.7),
                     radius: powerButtonRadius - 15,
-                    child: CircleAvatar(
-                      backgroundColor: controller.getPowerButtonColor,
-                      radius: powerButtonRadius - 30,
-                      child: Transform.scale(
-                        scale: 2,
-                        child: CsIcon(
-                          Icons.power_settings_new_sharp,
-                          color: Colors.white,
-                          onTap: () => controller.connectVpn(),
+                    child: InkWell(
+                      focusColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () => controller.connectVpn(),
+                      child: CircleAvatar(
+                        backgroundColor: controller.getPowerButtonColor,
+                        radius: powerButtonRadius - 30,
+                        child: Transform.scale(
+                          scale: 2,
+                          child: const CsIcon(
+                            Icons.power_settings_new_sharp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -147,7 +153,16 @@ class HomeView extends GetView<HomeController> {
             ),
           ),
           Expanded(
-              child: LottieBuilder.asset('assets/animations/globe_anim.json')),
+            child: Obx(
+              () => LottieBuilder.asset(
+                kHomeAnimation,
+                animate: (controller.vpnState.value ==
+                        VpnEngine.vpnConnecting ||
+                    controller.vpnState.value == VpnEngine.vpnConnected ||
+                    controller.vpnState.value == VpnEngine.vpnAuthenticating),
+              ),
+            ),
+          ),
         ],
       ),
     );
