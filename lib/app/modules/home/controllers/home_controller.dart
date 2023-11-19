@@ -85,7 +85,12 @@ class HomeController extends GetxController {
         // In duration => get from storage
         var savedVpnServer = box.read(kSelectedVpnServer);
         if (savedVpnServer != null) {
-          vpnServer.value = savedVpnServer;
+          try {
+            vpnServer.value = savedVpnServer;
+          } catch (e) {
+            printError(info: 'getVpnServer => $e');
+            _serverProvider.refreshVpnServers();
+          }
         } else {
           //No server found in storage => Refresh now
           _serverProvider.refreshVpnServers();
@@ -121,6 +126,19 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.SERVERS);
   }
 
+  bool get isVpnIsTryingToConnect {
+    switch (vpnState.value) {
+      case VpnEngine.vpnDisconnected:
+        return false;
+
+      case VpnEngine.vpnConnected:
+        return false;
+
+      default:
+        return true;
+    }
+  }
+
   Color get getPowerButtonColor {
     switch (vpnState.value) {
       case VpnEngine.vpnDisconnected:
@@ -148,22 +166,27 @@ class HomeController extends GetxController {
   }
 
   connectVpn() async {
-    VpnEngine.isConnected().then((isConnected) async {
-      if (isConnected) {
-        await VpnEngine.stopVpn();
-      } else {
-        final data = const Base64Decoder()
-            .convert(vpnServer.value.openVPNConfigDataBase64 ?? "");
-        final config = const Utf8Decoder().convert(data);
-        VpnEngine.startVpn(
-          VpnConfig(
-              country: vpnServer.value.countryLong ?? "",
-              username: 'vpn',
-              password: 'vpn',
-              config: config),
-        );
-      }
-    });
+    if (vpnState.value != VpnEngine.vpnAuthenticating &&
+        vpnState.value != VpnEngine.vpnConnecting &&
+        vpnState.value != VpnEngine.vpnPrepare &&
+        vpnState.value != VpnEngine.vpnWaitConnection) {
+      VpnEngine.isConnected().then((isConnected) async {
+        if (isConnected) {
+          await VpnEngine.stopVpn();
+        } else {
+          final data = const Base64Decoder()
+              .convert(vpnServer.value.openVPNConfigDataBase64 ?? "");
+          final config = const Utf8Decoder().convert(data);
+          VpnEngine.startVpn(
+            VpnConfig(
+                country: vpnServer.value.countryLong ?? "",
+                username: 'vpn',
+                password: 'vpn',
+                config: config),
+          );
+        }
+      });
+    }
   }
 
   @override

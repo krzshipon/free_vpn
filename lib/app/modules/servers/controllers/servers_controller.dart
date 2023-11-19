@@ -66,8 +66,13 @@ class ServersController extends GetxController {
         if (vpnServers != null) {
           List<VpnServer> vpnServerList = vpnServers;
           if (vpnServerList.isNotEmpty) {
-            servers.value = vpnServers;
-            servers.refresh();
+            try {
+              servers.value = vpnServers;
+              servers.refresh();
+            } catch (e) {
+              printError(info: 'getVpnServer => $e');
+              refreshVpnServersFromProvider();
+            }
           }
         }
       } else {

@@ -103,33 +103,48 @@ class HomeView extends GetView<HomeController> {
             height: Get.height / 4,
             child: Obx(
               () => Center(
-                child: CircleAvatar(
-                  backgroundColor:
-                      controller.getPowerButtonColor.withOpacity(.1),
-                  radius: powerButtonRadius,
-                  child: CircleAvatar(
-                    backgroundColor:
-                        controller.getPowerButtonColor.withOpacity(.7),
-                    radius: powerButtonRadius - 15,
-                    child: InkWell(
-                      focusColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () => controller.connectVpn(),
-                      child: CircleAvatar(
-                        backgroundColor: controller.getPowerButtonColor,
-                        radius: powerButtonRadius - 30,
-                        child: Transform.scale(
-                          scale: 2,
-                          child: const CsIcon(
-                            Icons.power_settings_new_sharp,
-                            color: Colors.white,
+                child: !controller.isVpnIsTryingToConnect
+                    ? CircleAvatar(
+                        backgroundColor:
+                            controller.getPowerButtonColor.withOpacity(.1),
+                        radius: powerButtonRadius,
+                        child: CircleAvatar(
+                          backgroundColor:
+                              controller.getPowerButtonColor.withOpacity(.7),
+                          radius: powerButtonRadius - 15,
+                          child: InkWell(
+                            focusColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: () => controller.connectVpn(),
+                            child: CircleAvatar(
+                              backgroundColor: controller.getPowerButtonColor,
+                              radius: powerButtonRadius - 30,
+                              child: Transform.scale(
+                                scale: 2,
+                                child: const CsIcon(
+                                  Icons.power_settings_new_sharp,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : InkWell(
+                        focusColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () => controller.connectVpn(),
+                        child: SizedBox(
+                          width: powerButtonRadius * 2,
+                          height: powerButtonRadius * 2,
+                          child: LottieBuilder.asset(
+                            kaConnecting,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
               ),
             ),
           ),
@@ -155,7 +170,7 @@ class HomeView extends GetView<HomeController> {
           Expanded(
             child: Obx(
               () => LottieBuilder.asset(
-                kHomeAnimation,
+                kaHomeGlobe,
                 animate: (controller.vpnState.value ==
                         VpnEngine.vpnConnecting ||
                     controller.vpnState.value == VpnEngine.vpnConnected ||
