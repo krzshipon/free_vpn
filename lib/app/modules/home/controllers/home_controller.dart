@@ -115,7 +115,9 @@ class HomeController extends GetxController {
   }
 
   selectLocation() {
-    VpnEngine.stopVpn();
+    if (vpnState.value != VpnEngine.vpnDisconnected) {
+      VpnEngine.stopVpn();
+    }
     Get.toNamed(Routes.SERVERS);
   }
 
