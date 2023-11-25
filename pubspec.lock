@@ -349,7 +349,7 @@ packages:
     description:
       path: "."
       ref: dev
-      resolved-ref: "9cbeb80471736ee5ae461ed951039125d1974330"
+      resolved-ref: ec12b9e119dac1e67e38ad94e090e2b278fdba8f
       url: "https://github.com/krzshipon/super_ui_kit.git"
     source: git
     version: "0.0.1"

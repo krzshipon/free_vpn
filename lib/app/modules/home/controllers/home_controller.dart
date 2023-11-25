@@ -199,5 +199,11 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.IP_DETAILS);
   }
 
-  changeTheme() {}
+  changeTheme() {
+    ThemeMode themeMode = Get.theme.brightness == Brightness.dark
+        ? ThemeMode.light
+        : ThemeMode.dark;
+    Get.changeThemeMode(themeMode);
+    box.write(kSelectedThemeMode, themeMode);
+  }
 }

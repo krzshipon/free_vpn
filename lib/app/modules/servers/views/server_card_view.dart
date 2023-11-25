@@ -30,9 +30,13 @@ class ServerCardView extends GetView {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(5.0), //or 15.0
                   child: Container(
-                    color: (vpnServer.countryShort == null)
-                        ? Colors.red.shade300
-                        : null,
+                    decoration: BoxDecoration(
+                      color: (vpnServer.countryShort == null)
+                          ? Colors.red.shade300
+                          : null,
+                      border:
+                          Border.all(color: Get.theme.colorScheme.tertiary),
+                    ),
                     height: 55.0,
                     width: 80.0,
                     child: (vpnServer.countryShort == null)

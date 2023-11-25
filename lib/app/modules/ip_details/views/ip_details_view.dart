@@ -26,11 +26,14 @@ class IpDetailsView extends GetView<IpDetailsController> {
                 borderRadius: BorderRadius.circular(5.0), //or 15.0
                 child: Obx(
                   () => Container(
-                    color: (controller
-                                .homeController.ipDetails.value.countryCode ==
-                            null)
-                        ? Colors.red.shade300
-                        : null,
+                    decoration: BoxDecoration(
+                      color: (controller
+                                  .homeController.ipDetails.value.countryCode ==
+                              null)
+                          ? Colors.red.shade300
+                          : null,
+                      border: Border.all(color: Get.theme.colorScheme.tertiary),
+                    ),
                     height: 55.0,
                     width: 80.0,
                     child: (controller
@@ -68,7 +71,7 @@ class IpDetailsView extends GetView<IpDetailsController> {
                     Container(
                       color: Get.theme.colorScheme.primary,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
