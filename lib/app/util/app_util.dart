@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 enum ConnectionType { good, avg, bad }
 
 class AppUtil {
@@ -26,5 +28,11 @@ class AppUtil {
     if (connections <= 20) return ConnectionType.good;
     if (connections <= 50) return ConnectionType.avg;
     return ConnectionType.bad;
+  }
+
+  static ThemeMode getThemeModeFromName(String modeName) {
+    if (modeName == ThemeMode.light.name) return ThemeMode.light;
+    if (modeName == ThemeMode.dark.name) return ThemeMode.dark;
+    return ThemeMode.system;
   }
 }

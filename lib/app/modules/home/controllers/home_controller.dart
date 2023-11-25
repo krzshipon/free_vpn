@@ -204,6 +204,6 @@ class HomeController extends GetxController {
         ? ThemeMode.light
         : ThemeMode.dark;
     Get.changeThemeMode(themeMode);
-    box.write(kSelectedThemeMode, themeMode);
+    box.write(kSelectedThemeMode, themeMode.name);
   }
 }

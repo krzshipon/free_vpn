@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:free_vpn/app/data/data_keys.dart';
+import 'package:free_vpn/app/util/app_util.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import 'app/routes/app_pages.dart';
@@ -25,9 +26,9 @@ Future<void> main() async {
 }
 
 void initTheme() {
-  ThemeMode appThemeMode =
-      GetStorage().read(kSelectedThemeMode) ?? ThemeMode.system;
-  Get.changeThemeMode(appThemeMode);
+  String appThemeMode =
+      GetStorage().read(kSelectedThemeMode) ?? ThemeMode.system.name;
+  Get.changeThemeMode(AppUtil.getThemeModeFromName(appThemeMode));
 }
 
 void setupLoaderUi() {
