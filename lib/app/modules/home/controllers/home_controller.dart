@@ -46,7 +46,7 @@ class HomeController extends GetxController {
     selectedServerListener =
         box.listenKey(kSelectedVpnServer, (selectedVpnServer) {
       if (selectedVpnServer != null) {
-        vpnServer.value = selectedVpnServer;
+        vpnServer.value = VpnServer.fromJson(selectedVpnServer);
         if (isSelection) {
           isSelection = !isSelection;
           connectVpn();
@@ -86,7 +86,7 @@ class HomeController extends GetxController {
         var savedVpnServer = box.read(kSelectedVpnServer);
         if (savedVpnServer != null) {
           try {
-            vpnServer.value = savedVpnServer;
+            vpnServer.value = VpnServer.fromJson(savedVpnServer);
           } catch (e) {
             printError(info: 'getVpnServer => $e');
             _serverProvider.refreshVpnServers();

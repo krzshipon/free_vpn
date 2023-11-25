@@ -87,7 +87,7 @@ class ServersController extends GetxController {
 
   selectVpnServer(int index) {
     _homeController.isSelection = true;
-    box.write(kSelectedVpnServer, servers[index]);
+    box.write(kSelectedVpnServer, servers[index].toJson());
     Get.back();
   }
 
