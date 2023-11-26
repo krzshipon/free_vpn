@@ -26,13 +26,21 @@ class ServersController extends GetxController {
 
   void registerListeners() {
     //Vpn Servers
-    box.listenKey(kVpnServers, (vpnServers) {
-      if (vpnServers != null) {
-        List<VpnServer> vpnServerList = vpnServers;
-        if (vpnServerList.isNotEmpty) {
-          servers.value = vpnServers;
+    box.listenKey(kVpnServers, (dynamic data) {
+      printInfo(info: 'listenKey => Value updated for $kVpnServers');
+      if (data != null) {
+        // Convert the dynamic data back to a List of VpnServer
+        final List<VpnServer> updatedList = (data as List<dynamic>)
+            .map((json) => VpnServer.fromJson(json))
+            .toList();
+        printInfo(info: 'listenKey => [✔] Updated List: ${updatedList.length}');
+        if (updatedList.isNotEmpty) {
+          servers.value = updatedList;
           servers.refresh();
         }
+      } else {
+        printInfo(info: 'Key $kVpnServers was deleted');
+        printInfo(info: 'listenKey => [✘] Key: $kVpnServers , Value: Null');
       }
     });
   }
@@ -55,32 +63,57 @@ class ServersController extends GetxController {
     super.onClose();
   }
 
+  /// Fetches VPN servers from storage or triggers a provider refresh based on the last update time.
+  ///
+  /// - If last update within [ktVpnServersRefreshTime], uses stored data.
+  /// - If last update time not found or duration elapsed, triggers a refresh from the provider.
   getVpnServers() {
-    String? vpnServerLastUpdatedTimeStamp =
-        box.read<String>(kVpnServersUpdatedAt);
-    if (vpnServerLastUpdatedTimeStamp != null) {
-      var lastUpdatedAt = DateTime.parse(vpnServerLastUpdatedTimeStamp);
-      if (DateTime.now().difference(lastUpdatedAt) < ktVpnServersRefreshTime) {
-        //In duration => get from storage
-        var vpnServers = box.read(kVpnServers);
-        if (vpnServers != null) {
-          List<VpnServer> vpnServerList = vpnServers;
-          if (vpnServerList.isNotEmpty) {
-            try {
-              servers.value = vpnServers;
-              servers.refresh();
-            } catch (e) {
-              printError(info: 'getVpnServer => $e');
-              refreshVpnServersFromProvider();
-            }
+    try {
+      printInfo(info: '>>> Start getVpnServers');
+
+      String? vpnServerLastUpdatedTimeStamp =
+          box.read<String>(kVpnServersUpdatedAt);
+
+      if (vpnServerLastUpdatedTimeStamp != null) {
+        var lastUpdatedAt = DateTime.parse(vpnServerLastUpdatedTimeStamp);
+
+        if (DateTime.now().difference(lastUpdatedAt) <
+            ktVpnServersRefreshTime) {
+          // In duration => get from storage
+          final List<VpnServer> storedVpnList =
+              (box.read<List<dynamic>>(kVpnServers) ?? [])
+                  .map((json) => VpnServer.fromJson(json))
+                  .toList();
+
+          if (storedVpnList.isNotEmpty) {
+            printInfo(
+                info:
+                    'getVpnServers => [✔] Using stored VPN servers.');
+            servers.value = storedVpnList;
+            servers.refresh();
+          } else {
+            printInfo(
+                info:
+                    'getVpnServers => [✘] Stored VPN servers list is empty. Refreshing from provider.');
+            refreshVpnServersFromProvider();
           }
+        } else {
+          // Time elapsed => refresh VPN servers
+          printInfo(
+              info:
+                  'getVpnServers => Duration elapsed. Refreshing VPN servers from provider.');
+          refreshVpnServersFromProvider();
         }
       } else {
-        //Time elapsed => refresh vpn servers
+        // VPN servers last update time not found => refresh VPN servers
+        printInfo(
+            info:
+                'getVpnServers => VPN servers last update time not found. Refreshing from provider.');
         refreshVpnServersFromProvider();
       }
-    } else {
-      //Vpn servers last update time not found => refresh vpn servers
+      printInfo(info: '<<< End getVpnServers');
+    } catch (e) {
+      printError(info: 'getVpnServers => ⚠ $e');
       refreshVpnServersFromProvider();
     }
   }

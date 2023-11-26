@@ -37,7 +37,7 @@ class VpnServerProvider extends GetConnect {
       }
 
       if (vpnList.isNotEmpty) {
-        box.write(kVpnServers, vpnList);
+        box.write(kVpnServers, vpnList.map((server) => server.toJson()).toList());
         box.write(kSelectedVpnServer, vpnList[1].toJson());
       }
       box.write(kVpnServersUpdatedAt, DateTime.now().toIso8601String());

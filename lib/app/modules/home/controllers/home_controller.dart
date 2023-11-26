@@ -76,47 +76,93 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
+  /// Fetches the selected VPN server from storage or triggers a provider refresh.
+  ///
+  /// - Checks the last update time of VPN servers.
+  /// - If within [ktVpnServersRefreshTime], attempts to get the server from storage.
+  ///   - If successful, updates [vpnServer] and refreshes state.
+  ///   - If parsing fails, logs the error and triggers a provider refresh.
+  /// - If no server found in storage or the last update time elapsed, triggers a refresh from the provider.
   void getVpnServer() {
-    String? vpnServerLastUpdatedTimeStamp =
-        box.read<String>(kVpnServersUpdatedAt);
-    if (vpnServerLastUpdatedTimeStamp != null) {
-      var lastUpdatedAt = DateTime.parse(vpnServerLastUpdatedTimeStamp);
-      if (DateTime.now().difference(lastUpdatedAt) < ktVpnServersRefreshTime) {
-        // In duration => get from storage
-        var savedVpnServer = box.read(kSelectedVpnServer);
-        if (savedVpnServer != null) {
-          try {
+    try {
+      printInfo(info: '>>> Start getVpnServer');
+
+      String? lastUpdateTime = box.read<String>(kVpnServersUpdatedAt);
+
+      if (lastUpdateTime != null) {
+        if (DateTime.now().difference(DateTime.parse(lastUpdateTime)) <
+            ktVpnServersRefreshTime) {
+          var savedVpnServer = box.read(kSelectedVpnServer);
+          if (savedVpnServer != null) {
+            // In duration => get from storage
+            printInfo(info: 'getVpnServer => [✔] VPN server found in storage.');
             vpnServer.value = VpnServer.fromJson(savedVpnServer);
-          } catch (e) {
-            printError(info: 'getVpnServer => $e');
+          } else {
+            // No server found in storage => Refresh now
+            printInfo(
+                info:
+                    'getVpnServer => [✘] No saved VPN server found. Refreshing from provider.');
             _serverProvider.refreshVpnServers();
           }
         } else {
-          //No server found in storage => Refresh now
+          // Time elapsed => refresh VPN servers
+          printInfo(
+              info:
+                  'getVpnServer => Duration elapsed. Refreshing VPN servers from provider.');
           _serverProvider.refreshVpnServers();
         }
       } else {
-        //Time elapsed => refresh vpn servers
+        // VPN servers last update time not found => refresh VPN servers
+        printInfo(
+            info:
+                'getVpnServer => Last update time not found. Refreshing VPN servers from provider.');
         _serverProvider.refreshVpnServers();
       }
-    } else {
-      //Vpn servers last update time not found => refresh vpn servers
+
+      printInfo(info: '<<< End getVpnServer');
+    } catch (error) {
+      // Error during execution. Log error and refresh from provider.
+      printError(info: 'getVpnServer => ⚠ $error');
       _serverProvider.refreshVpnServers();
     }
   }
 
+  /// Retrieves IP details asynchronously and updates the [ipDetails] value.
+  ///
+  /// - Initializes [ipDetails] with an empty instance.
+  /// - Delays execution by 3 seconds to simulate asynchronous operation.
+  /// - Calls the [_ipDetailsProvider.getIPDetails()] method.
+  ///   - If details are received, updates [ipDetails] with the result.
   void getIpDetails() {
-    ipDetails.value = IpDetails();
-    Future.delayed(const Duration(seconds: 3)).then((value) {
-      _ipDetailsProvider.getIPDetails().then((result) {
-        result?.printInfo();
-        if (result != null) {
-          ipDetails.value = result;
-        }
-      }).onError((error, stackTrace) {
-        error.printError();
+    try {
+      // Log start of the method
+      printInfo(info: '>>> Start getIpDetails');
+
+      // Initialize ipDetails with an empty instance
+      ipDetails.value = IpDetails();
+
+      // Simulate asynchronous operation with a delay
+      Future.delayed(const Duration(seconds: 3)).then((value) {
+        // Fetch IP details from the provider
+        _ipDetailsProvider.getIPDetails().then((result) {
+          // If details are received, update ipDetails
+          if (result != null) {
+            printInfo(
+                info:
+                    'getIpDetails => [✔] Ip details are received, updating ipDetails');
+            ipDetails.value = result;
+          } else {
+            printInfo(info: 'getIpDetails => [✘] Ip details are received Null');
+          }
+        }).onError((error, stackTrace) {
+          printError(info: 'getIpDetails => ⚠ $error');
+        });
       });
-    });
+
+      printInfo(info: '<<< End getIpDetails');
+    } catch (error) {
+      printError(info: 'getIpDetails => ⚠ $error');
+    }
   }
 
   selectLocation() {
