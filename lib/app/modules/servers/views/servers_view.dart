@@ -23,6 +23,20 @@ class ServersView extends GetView<ServersController> {
             title: "Vpn Servers",
           ),
           verticalSpaceRegular,
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: CSText.label(
+                    '* For better speed, select a server with higher bandwith but less connections.',
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Obx(
             () => Expanded(
               child: controller.servers.isNotEmpty

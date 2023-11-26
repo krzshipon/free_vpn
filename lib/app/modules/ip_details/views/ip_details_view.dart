@@ -208,6 +208,22 @@ class IpDetailsView extends GetView<IpDetailsController> {
               ),
             ],
           ),
+          verticalSpaceSmall,
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: CSText.label(
+                    '*Thanks to vpn gate for providing openvpn servers to ip-api for providing ip details info.',
+                    textAlign: TextAlign.center,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
