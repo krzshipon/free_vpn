@@ -38,10 +38,12 @@ class HomeController extends GetxController {
   void registerListeners() {
     //Engine status...
     VpnEngine.vpnStageSnapshot().listen((event) {
-      vpnState.value = event;
-      if (event == VpnEngine.vpnConnected ||
-          event == VpnEngine.vpnDisconnected) {
-        getIpDetails();
+      if (vpnState.value != event) {
+        if (event == VpnEngine.vpnConnected ||
+            event == VpnEngine.vpnDisconnected) {
+          getIpDetails();
+        }
+        vpnState.value = event;
       }
     });
     //Selected Server...
@@ -153,7 +155,7 @@ class HomeController extends GetxController {
         // Fetch IP details from the provider
         _ipDetailsProvider.getIPDetails().then((result) {
           // If details are received, update ipDetails
-          if (result != null) {
+          if (result != null && result.query != null) {
             printInfo(
                 info:
                     'getIpDetails => [✔] Ip details are received, updating ipDetails');
