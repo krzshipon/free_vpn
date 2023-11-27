@@ -33,5 +33,5 @@ void initTheme() {
 }
 
 void setupLoaderUi() {
-  AppConfig.loaderScale = 0.8;
+  AppConfig.loaderScale = 0.9;
 }

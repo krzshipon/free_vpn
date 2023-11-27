@@ -52,31 +52,7 @@ class AdController extends GetxController {
         templateType: TemplateType.small,
         cornerRadius: 10.0,
         // Additional styling options can be uncommented and customized as needed
-        // mainBackgroundColor: Colors.purple,
-        // callToActionTextStyle: NativeTemplateTextStyle(
-        //   textColor: Colors.cyan,
-        //   backgroundColor: Colors.red,
-        //   style: NativeTemplateFontStyle.monospace,
-        //   size: 16.0,
-        // ),
-        // primaryTextStyle: NativeTemplateTextStyle(
-        //   textColor: Colors.red,
-        //   backgroundColor: Colors.cyan,
-        //   style: NativeTemplateFontStyle.italic,
-        //   size: 16.0,
-        // ),
-        // secondaryTextStyle: NativeTemplateTextStyle(
-        //   textColor: Colors.green,
-        //   backgroundColor: Colors.black,
-        //   style: NativeTemplateFontStyle.bold,
-        //   size: 16.0,
-        // ),
-        // tertiaryTextStyle: NativeTemplateTextStyle(
-        //   textColor: Colors.brown,
-        //   backgroundColor: Colors.amber,
-        //   style: NativeTemplateFontStyle.normal,
-        //   size: 16.0,
-        // ),
+        //mainBackgroundColor: Get.theme.colorScheme.background,
       ),
     )..load();
     // Log the end of the method

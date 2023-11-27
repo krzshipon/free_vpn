@@ -61,7 +61,7 @@ class HomeView extends GetView<HomeController> {
                     children: [
                       Expanded(
                         child: CSCard(
-                          margin: EdgeInsets.only(right: 5),
+                          margin: const EdgeInsets.only(right: 5),
                           children: [
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -81,7 +81,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                       Expanded(
                         child: CSCard(
-                          margin: EdgeInsets.only(left: 5),
+                          margin: const EdgeInsets.only(left: 5),
                           children: [
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -115,7 +115,7 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
           verticalSpaceMedium,
-          Container(
+          SizedBox(
             height: Get.height / 4,
             child: Obx(
               () => Center(

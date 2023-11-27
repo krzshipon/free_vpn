@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:free_vpn/app/common/controllers/ad_controller.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../../../data/app_constants.dart';
