@@ -30,10 +30,6 @@ class HomeController extends GetxController {
   //Listeners => Must dispose on close
   Function()? selectedServerListener;
 
-  //Ads
-  NativeAd? nativeAd;
-  final nativeAdIsLoaded = false.obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -79,6 +75,9 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    //Dispose ads
+    adController.nativeAd?.dispose();
+    //Stop Vpn
     VpnEngine.stopVpn();
     //Dispose listeners
     selectedServerListener?.call();
