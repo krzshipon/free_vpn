@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:free_vpn/app/common/controllers/ad_controller.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../../../data/app_constants.dart';
@@ -17,6 +19,7 @@ class HomeController extends GetxController {
   final box = GetStorage();
   final _ipDetailsProvider = IpDetailsProvider();
   final VpnServerProvider _serverProvider = VpnServerProvider();
+  final AdController adController = AdController();
 
   //Required Fields
   final vpnServer = VpnServer(countryLong: 'Please select a server...').obs;
@@ -26,6 +29,10 @@ class HomeController extends GetxController {
 
   //Listeners => Must dispose on close
   Function()? selectedServerListener;
+
+  //Ads
+  NativeAd? nativeAd;
+  final nativeAdIsLoaded = false.obs;
 
   @override
   void onInit() {
@@ -66,6 +73,8 @@ class HomeController extends GetxController {
     getVpnServer();
     //Ip Detail
     getIpDetails();
+    //Ads
+    loadAds();
   }
 
   @override
@@ -251,5 +260,9 @@ class HomeController extends GetxController {
         : ThemeMode.dark;
     Get.changeThemeMode(themeMode);
     box.write(kSelectedThemeMode, themeMode.name);
+  }
+
+  void loadAds() {
+    adController.loadNativeAd(); //load a native ad to show in bottom navbar
   }
 }

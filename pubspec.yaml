@@ -15,6 +15,7 @@ dependencies:
       ref: dev
   flutter: 
     sdk: flutter
+  google_mobile_ads: ^3.1.0
 
 dev_dependencies: 
   flutter_lints: ^2.0.0

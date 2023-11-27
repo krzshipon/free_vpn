@@ -1,8 +1,9 @@
-import 'package:free_vpn/app/modules/home/controllers/home_controller.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
+import '../../../common/controllers/ad_controller.dart';
 import '../../../data/app_constants.dart';
 import '../../../data/data_keys.dart';
+import '../../home/controllers/home_controller.dart';
 import '../providers/vpn_server_provider.dart';
 import '../vpn_server_model.dart';
 
@@ -11,6 +12,7 @@ class ServersController extends GetxController {
   final box = GetStorage();
   final VpnServerProvider _serverProvider = VpnServerProvider();
   final HomeController _homeController = Get.find<HomeController>();
+  final AdController adController = AdController();
 
   //Required Fields
   final servers = <VpnServer>[].obs;
@@ -54,6 +56,8 @@ class ServersController extends GetxController {
   void loadData() {
     //Vpn Server
     getVpnServers();
+    //Ads
+    loadAds();
   }
 
   @override
@@ -86,9 +90,7 @@ class ServersController extends GetxController {
                   .toList();
 
           if (storedVpnList.isNotEmpty) {
-            printInfo(
-                info:
-                    'getVpnServers => [✔] Using stored VPN servers.');
+            printInfo(info: 'getVpnServers => [✔] Using stored VPN servers.');
             servers.value = storedVpnList;
             servers.refresh();
           } else {
@@ -126,5 +128,9 @@ class ServersController extends GetxController {
 
   refreshVpnServersFromProvider() {
     _serverProvider.refreshVpnServers();
+  }
+
+  void loadAds() {
+    adController.loadNativeAd(); //load a native ad to show in bottom navbar
   }
 }

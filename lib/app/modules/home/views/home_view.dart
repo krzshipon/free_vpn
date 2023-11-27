@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:free_vpn/app/data/app_constants.dart';
 import 'package:free_vpn/app/data/models/vpn_status.dart';
 import 'package:free_vpn/app/services/vpn_engine.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../../servers/views/server_card_view.dart';
@@ -12,7 +13,22 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     var powerButtonRadius = Get.height / 8 - 10;
+
     return CSHomeWidget(
+      bottomNavigationBar: Obx(
+        () => controller.adController.nativeAdIsLoaded.isTrue &&
+                controller.adController.nativeAd != null
+            ? ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 320, // minimum recommended width
+                  minHeight: 90, // minimum recommended height
+                  maxWidth: 320,
+                  maxHeight: 90,
+                ),
+                child: AdWidget(ad: controller.adController.nativeAd!),
+              )
+            : emptyWidget,
+      ),
       child: Column(
         children: [
           verticalSpaceRegular,
