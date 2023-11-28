@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 // START: FlutterFire Configuration
-apply plugin: 'com.google.gms.google-services'
+// apply plugin: 'com.google.gms.google-services'
 // END: FlutterFire Configuration
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
@@ -35,7 +35,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.harshRajpurohit.freeVpn"
+        applicationId "com.codernestbd.freevpn"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
