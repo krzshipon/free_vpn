@@ -1,4 +1,4 @@
-package com.harshRajpurohit.freeVpn;
+package com.codernestbd.freevpn;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
