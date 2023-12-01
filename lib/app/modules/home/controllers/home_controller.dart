@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:free_vpn/app/common/controllers/ad_controller.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../../../data/app_constants.dart';
@@ -17,6 +18,7 @@ class HomeController extends GetxController {
   final box = GetStorage();
   final _ipDetailsProvider = IpDetailsProvider();
   final VpnServerProvider _serverProvider = VpnServerProvider();
+  final AdController adController = AdController();
 
   //Required Fields
   final vpnServer = VpnServer(countryLong: 'Please select a server...').obs;
@@ -36,10 +38,12 @@ class HomeController extends GetxController {
   void registerListeners() {
     //Engine status...
     VpnEngine.vpnStageSnapshot().listen((event) {
-      vpnState.value = event;
-      if (event == VpnEngine.vpnConnected ||
-          event == VpnEngine.vpnDisconnected) {
-        getIpDetails();
+      if (vpnState.value != event) {
+        if (event == VpnEngine.vpnConnected ||
+            event == VpnEngine.vpnDisconnected) {
+          getIpDetails();
+        }
+        vpnState.value = event;
       }
     });
     //Selected Server...
@@ -66,10 +70,15 @@ class HomeController extends GetxController {
     getVpnServer();
     //Ip Detail
     getIpDetails();
+    //Ads
+    loadAds();
   }
 
   @override
   void onClose() {
+    //Dispose ads
+    adController.nativeAd?.dispose();
+    //Stop Vpn
     VpnEngine.stopVpn();
     //Dispose listeners
     selectedServerListener?.call();
@@ -146,7 +155,7 @@ class HomeController extends GetxController {
         // Fetch IP details from the provider
         _ipDetailsProvider.getIPDetails().then((result) {
           // If details are received, update ipDetails
-          if (result != null) {
+          if (result != null && result.query != null) {
             printInfo(
                 info:
                     'getIpDetails => [✔] Ip details are received, updating ipDetails');
@@ -251,5 +260,9 @@ class HomeController extends GetxController {
         : ThemeMode.dark;
     Get.changeThemeMode(themeMode);
     box.write(kSelectedThemeMode, themeMode.name);
+  }
+
+  void loadAds() {
+    adController.loadNativeAd(); //load a native ad to show in bottom navbar
   }
 }

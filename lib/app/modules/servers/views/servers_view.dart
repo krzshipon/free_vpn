@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:super_ui_kit/super_ui_kit.dart';
 
 import '../controllers/servers_controller.dart';
@@ -12,6 +13,20 @@ class ServersView extends GetView<ServersController> {
       floatingActionButton: CSIconButton(
         icon: Icons.refresh_sharp,
         onTap: () => controller.refreshVpnServersFromProvider(),
+      ),
+      bottomNavigationBar: Obx(
+        () => controller.adController.nativeAdIsLoaded.isTrue &&
+                controller.adController.nativeAd != null
+            ? ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 320, // minimum recommended width
+                  minHeight: 90, // minimum recommended height
+                  maxWidth: 320,
+                  maxHeight: 90,
+                ),
+                child: AdWidget(ad: controller.adController.nativeAd!),
+              )
+            : emptyWidget,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
